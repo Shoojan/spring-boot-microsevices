@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import sujan.smiles.moviecatalogservice.model.CatalogItem;
 import sujan.smiles.moviecatalogservice.model.Movie;
 import sujan.smiles.moviecatalogservice.model.Rating;
+import sujan.smiles.moviecatalogservice.model.UserRating;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,24 +37,24 @@ public class MovieCatalogResource {
 
 
         //get all rated movie Ids
-        List<Rating> ratings = Arrays.asList(
-                new Rating("m1", 4),
-                new Rating("m2", 3),
-                new Rating("m3", 5)
-        );
+        UserRating userRating = restTemplate.getForObject(
+                "http://localhost:8083/ratings/users/" + userId,
+                UserRating.class);
 
-        //for each movie Id, call movie Info service and get details
-        //put them all together
 
-        return ratings.stream()
+        return userRating.getUserRatings().stream()
                 .map(rating -> {
+                    //for each movie Id, call movie Info service and get details
                     Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
+
+                    //put them all together
                     return new CatalogItem(
-                            movie.getName(),
-                            "desc of" + rating.getMovieId(),
+                            rating.getMovieId(),
+                            rating.getMovieId() + " " + movie.getName(),
                             rating.getRating());
                 })
                 .collect(Collectors.toList());
+
 
 //        return ratings.stream()
 //                .map(rating -> {

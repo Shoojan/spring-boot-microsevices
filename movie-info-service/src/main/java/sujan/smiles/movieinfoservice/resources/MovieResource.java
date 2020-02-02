@@ -12,7 +12,7 @@ public class MovieResource {
 
     @GetMapping("{movieId}")
     public Movie getMovieInfo(@PathVariable("movieId") String movieId){
-        return new Movie(movieId,"Test name");
+        return new Movie(movieId,"Visit Nepal 2020!");
     }
 
 }
