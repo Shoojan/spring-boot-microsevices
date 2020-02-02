@@ -9,10 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import sujan.smiles.moviecatalogservice.model.CatalogItem;
 import sujan.smiles.moviecatalogservice.model.Movie;
-import sujan.smiles.moviecatalogservice.model.Rating;
 import sujan.smiles.moviecatalogservice.model.UserRating;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,14 +36,14 @@ public class MovieCatalogResource {
 
         //get all rated movie Ids
         UserRating userRating = restTemplate.getForObject(
-                "http://localhost:8083/ratings/users/" + userId,
+                "http://rating-data-service/ratings/users/" + userId,
                 UserRating.class);
 
 
         return userRating.getUserRatings().stream()
                 .map(rating -> {
                     //for each movie Id, call movie Info service and get details
-                    Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
+                    Movie movie = restTemplate.getForObject("http://movie-info-service/movies/" + rating.getMovieId(), Movie.class);
 
                     //put them all together
                     return new CatalogItem(
